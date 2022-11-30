@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import { Box } from 'components/reusableComponents/Box.styled';
 import { AiOutlineSearch } from 'react-icons/ai';
 // Чи краще тут обійтись без стейту і використати неконтрольований елемент і просто сабмітити результат?
 export default class Searchbar extends Component {
