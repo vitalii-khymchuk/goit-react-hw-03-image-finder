@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { Card, Image } from './ImageGalleryItem.styled';
 
 export default function ImageGalleryItem({
   webformatURL,
@@ -7,12 +8,9 @@ export default function ImageGalleryItem({
   addLargeImgToState,
 }) {
   return (
-    <li
-      className="ImageGalleryItem"
-      onClick={() => addLargeImgToState({ largeImageURL, tags })}
-    >
-      <img src={webformatURL} alt={tags} className="ImageGalleryItem-image" />
-    </li>
+    <Card onClick={() => addLargeImgToState({ largeImageURL, tags })}>
+      <Image src={webformatURL} alt={tags} />
+    </Card>
   );
 }
 

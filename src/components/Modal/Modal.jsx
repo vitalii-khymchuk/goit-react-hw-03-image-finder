@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import { Overlay, ModalWrap } from './Modal.styled';
 
 export default class Modal extends Component {
   componentDidMount() {
@@ -31,11 +32,11 @@ export default class Modal extends Component {
       modalImg: { largeImageURL, tags },
     } = this.props;
     return (
-      <div className="Overlay">
-        <div className="Modal">
+      <Overlay>
+        <ModalWrap className="Modal">
           <img src={largeImageURL} alt={tags} />
-        </div>
-      </div>
+        </ModalWrap>
+      </Overlay>
     );
   }
 }

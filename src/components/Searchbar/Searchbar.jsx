@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { SearchbarWrap, Form, Input, SearchBtn } from './Searchbar.styled';
 // Чи краще тут обійтись без стейту і використати неконтрольований елемент і просто сабмітити результат?
 export default class Searchbar extends Component {
   state = {
@@ -11,25 +12,24 @@ export default class Searchbar extends Component {
   };
   onSearchBtnClick = e => {
     e.preventDefault();
-    const searchQuery = this.state.searchQuery;
-    this.props.onSubmit(searchQuery);
+    const searchQuery = this.state.searchQuery.trim().toLowerCase();
+    if (searchQuery) {
+      this.props.onSubmit(searchQuery);
+    } else {
+      alert(`Enter something`);
+    }
   };
 
   render() {
     const { searchQuery } = this.state;
     return (
-      <header className="Searchbar">
-        <form className="SearchForm">
-          <button
-            type="submit"
-            onClick={this.onSearchBtnClick}
-            className="SearchForm-button"
-          >
+      <SearchbarWrap>
+        <Form>
+          <SearchBtn type="submit" onClick={this.onSearchBtnClick}>
             <AiOutlineSearch size="20" />
-          </button>
+          </SearchBtn>
 
-          <input
-            className="SearchForm-input"
+          <Input
             type="text"
             autoComplete="off"
             autoFocus
@@ -38,8 +38,8 @@ export default class Searchbar extends Component {
             value={searchQuery}
             onChange={this.onInputChange}
           />
-        </form>
-      </header>
+        </Form>
+      </SearchbarWrap>
     );
   }
 }
