@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem';
 
 export default function ImageGallery({ images, addLargeImgToState }) {
@@ -11,10 +12,14 @@ export default function ImageGallery({ images, addLargeImgToState }) {
             tags={tags}
             largeImageURL={largeImageURL}
             addLargeImgToState={addLargeImgToState}
-            id={id}
           />
         );
       })}
     </ul>
   );
 }
+
+ImageGallery.propTypes = {
+  images: PropTypes.array.isRequired,
+  addLargeImgToState: PropTypes.func.isRequired,
+};

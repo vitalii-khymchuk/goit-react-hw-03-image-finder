@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Box } from 'components/reusableComponents';
 
 export default function Button({ onLoadMoreClick }) {
@@ -9,3 +10,7 @@ export default function Button({ onLoadMoreClick }) {
     </Box>
   );
 }
+
+Button.propTypes = {
+  onLoadMoreClick: PropTypes.func.isRequired,
+};

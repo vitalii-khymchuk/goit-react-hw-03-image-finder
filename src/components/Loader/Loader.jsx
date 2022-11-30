@@ -10,10 +10,6 @@ export default function Loader() {
         width="80"
         ariaLabel="blocks-loading"
         wrapperStyle={{
-          // position: 'absolute',
-          // top: '50%',
-          // left: '50%',
-          // transform: 'translate(-50% -50%)',
           marginTop: '80px',
         }}
         colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}

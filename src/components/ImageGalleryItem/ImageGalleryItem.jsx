@@ -1,12 +1,11 @@
+import PropTypes from 'prop-types';
+
 export default function ImageGalleryItem({
   webformatURL,
   tags,
   largeImageURL,
   addLargeImgToState,
 }) {
-  // function shouldComponentUpdate(nextProps) {
-  //   return this.props.id !== nextProps.id;
-  // }
   return (
     <li
       className="ImageGalleryItem"
@@ -16,3 +15,10 @@ export default function ImageGalleryItem({
     </li>
   );
 }
+
+ImageGalleryItem.propTypes = {
+  addLargeImgToState: PropTypes.func.isRequired,
+  webformatURL: PropTypes.string.isRequired,
+  largeImageURL: PropTypes.string.isRequired,
+  tags: PropTypes.string.isRequired,
+};

@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { pixabay } from 'API';
-import ImageGallery from '../ImageGallery';
-import Modal from '../Modal';
+import ImageGallery from 'components/ImageGallery';
+import Modal from 'components/Modal';
 import Loader from 'components/Loader';
 import Button from 'components/Button';
 
@@ -24,39 +25,28 @@ export default class Main extends Component {
 
   scrollPosY = 0;
 
-  //   shouldComponentUpdate(nextProps, nextState) {
-
-  //   }
-
   getSnapshotBeforeUpdate(prevProps, prevState) {
-    const isQueryChanged = prevProps.searchQuery !== this.props.currentQuery;
-    const qwe = this.props.currentQuery !== '';
-    if (isQueryChanged && qwe) {
-      this.clearCurrentData();
-    }
-    if (window.scrollY !== 0) {
-      this.scrollPosY = window.scrollY;
+    const isQueryChanged = prevProps.searchQuery !== this.props.searchQuery;
+    if (prevState.status === 'resolved') {
+      this.scrollPosY = isQueryChanged ? 0 : window.scrollY;
     }
     return null;
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { searchQuery: currentQuery } = this.props;
+    const { currentPage, images } = this.state;
     const isQueryChanged = prevProps.searchQuery !== currentQuery;
-    // if (isQueryChanged) {
-    //   await this.clearCurrentData();
-    // }
-    const { currentPage } = this.state;
-    const isImagesAdded =
-      prevState.images.length !== 0 && prevState.images !== this.state.images;
     const isPageChanged = prevState.currentPage !== currentPage;
-
-    // console.log(`isQueryChanged ${isQueryChanged}`);
-    // console.log(`isPageChanged${isPageChanged}`);
-    if (isQueryChanged || isPageChanged) {
+    const isImagesAdded =
+      prevState.images.length !== 0 &&
+      prevState.images.length !== images.length;
+    const didResetAfterNewQuery = isQueryChanged && currentPage === 1;
+    if (isQueryChanged) {
+      this.resetCurrentData();
+    }
+    if (isPageChanged || didResetAfterNewQuery) {
       this.setState({ status: Status.PENDING });
-      //   console.log(currentQuery);
-      //   console.log(currentPage);
       pixabay
         .get({ query: currentQuery, currentPage })
         .then(data => this.handleReceivedData(data, isPageChanged))
@@ -96,16 +86,13 @@ export default class Main extends Component {
     });
   };
 
-  // Знову ж таки без setTimeout не працювало
   scrollPageTo = (yPos, extraScroll = 0) => {
-    setTimeout(() => {
-      window.scrollTo(0, yPos);
-      window.scrollTo({
-        top: yPos + extraScroll,
-        left: 0,
-        behavior: 'smooth',
-      });
-    }, 0);
+    window.scrollTo(0, yPos);
+    window.scrollTo({
+      top: yPos + extraScroll,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
   handleReceivedData = (data, isPageChanged) => {
@@ -129,10 +116,8 @@ export default class Main extends Component {
     this.setState({ status: Status.REJECTED });
   };
 
-  clearCurrentData = () => {
-    console.log(`reset`);
+  resetCurrentData = () => {
     this.setState({ currentPage: 1, images: [] });
-    this.scrollPosY = 0;
   };
 
   render() {
@@ -166,3 +151,5 @@ export default class Main extends Component {
     }
   }
 }
+
+Main.propTypes = { searchQuery: PropTypes.string.isRequired };

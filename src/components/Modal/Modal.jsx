@@ -1,10 +1,11 @@
+import PropTypes from 'prop-types';
 import { Component } from 'react';
 
 export default class Modal extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.onKeyPress);
     // без setInterval при відкритті модалки приходить подія mouseClick і модалка закриється,
-    // може підкажете рішення краще, ще виглядає дуже костильно
+    // може підкажете рішення краще, це виглядає дуже костильно
     setTimeout(() => {
       window.addEventListener('click', this.onClick);
     }, 0);
@@ -38,3 +39,11 @@ export default class Modal extends Component {
     );
   }
 }
+
+Modal.propTypes = {
+  modalImg: PropTypes.shape({
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+  }).isRequired,
+  closeModal: PropTypes.func.isRequired,
+};
