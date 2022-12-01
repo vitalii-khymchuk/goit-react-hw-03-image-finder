@@ -34,7 +34,7 @@ export default class Searchbar extends Component {
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
-            maxLength="10"
+            maxLength="20"
             value={searchQuery}
             onChange={this.onInputChange}
           />

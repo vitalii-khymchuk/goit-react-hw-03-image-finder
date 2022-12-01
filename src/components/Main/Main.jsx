@@ -10,7 +10,6 @@ const Status = {
   IDLE: 'idle',
   PENDING: 'pending',
   RESOLVED: 'resolved',
-  SHOWING: 'showing',
   REJECTED: 'rejected',
 };
 
@@ -49,7 +48,7 @@ export default class Main extends Component {
       this.setState({ status: Status.PENDING });
       pixabay
         .get({ query: currentQuery, currentPage })
-        .then(data => this.handleReceivedData(data, isPageChanged))
+        .then(this.handleReceivedData)
         .catch(this.handleError);
     }
     const scrollPosY = this.scrollPosY;
@@ -67,17 +66,11 @@ export default class Main extends Component {
   };
 
   addLargeImgToState = modalImg => {
-    this.setState({ modalImg, status: Status.SHOWING });
+    this.setState({ modalImg });
   };
 
   closeModal = () => {
-    this.setState({ modalImg: {}, status: Status.RESOLVED });
-  };
-
-  normalizeHits = hits => {
-    return hits.map(({ id, webformatURL, largeImageURL, tags }) => {
-      return { id, webformatURL, largeImageURL, tags };
-    });
+    this.setState({ modalImg: {} });
   };
 
   onLoadMoreClick = () => {
@@ -95,20 +88,12 @@ export default class Main extends Component {
     });
   };
 
-  handleReceivedData = (data, isPageChanged) => {
-    const {
-      data: { totalHits, hits },
-    } = data;
+  handleReceivedData = ({ totalHits, normalizedHits }) => {
     this.setState({ status: Status.RESOLVED });
     this.getTotalPages(totalHits);
-    const normalizedHits = this.normalizeHits(hits);
-    if (isPageChanged) {
-      this.setState(({ images }) => {
-        return { images: [...images, ...normalizedHits] };
-      });
-      return;
-    }
-    this.setState({ images: normalizedHits });
+    this.setState(({ images }) => {
+      return { images: [...images, ...normalizedHits] };
+    });
   };
 
   handleError = msg => {
@@ -122,6 +107,7 @@ export default class Main extends Component {
 
   render() {
     const { images, modalImg, status, totalPages } = this.state;
+    const isModalImg = !!modalImg.largeImageURL;
     if (status === 'pending') {
       return (
         <>
@@ -143,11 +129,11 @@ export default class Main extends Component {
             addLargeImgToState={this.addLargeImgToState}
           />
           {totalPages > 1 && <Button onLoadMoreClick={this.onLoadMoreClick} />}
+          {isModalImg && (
+            <Modal modalImg={modalImg} closeModal={this.closeModal} />
+          )}
         </>
       );
-    }
-    if (status === 'showing') {
-      return <Modal modalImg={modalImg} closeModal={this.closeModal} />;
     }
   }
 }
