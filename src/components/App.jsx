@@ -17,8 +17,8 @@ export class App extends Component {
   state = {
     searchQuery: '',
     images: [],
-    currentPage: 1,
     modalImg: {},
+    currentPage: 1,
     totalPages: null,
     status: Status.IDLE,
   };
@@ -55,10 +55,32 @@ export class App extends Component {
     }
   }
 
+  getQuery = searchQuery => {
+    this.resetCurrentData();
+    this.setState({ searchQuery });
+  };
+
+  resetCurrentData = () => {
+    this.setState({ currentPage: 1, images: [] });
+  };
+
   getTotalPages = totalHits => {
     const imagesPerPage = 12;
     const totalPages = Math.ceil(totalHits / imagesPerPage);
     this.setState({ totalPages });
+  };
+
+  handleReceivedData = ({ totalHits, normalizedHits }) => {
+    this.setState({ status: Status.RESOLVED });
+    this.getTotalPages(totalHits);
+    this.setState(({ images }) => {
+      return { images: [...images, ...normalizedHits] };
+    });
+  };
+
+  handleError = msg => {
+    console.log(msg);
+    this.setState({ status: Status.REJECTED });
   };
 
   addLargeImgToState = modalImg => {
@@ -84,27 +106,6 @@ export class App extends Component {
     });
   };
 
-  handleReceivedData = ({ totalHits, normalizedHits }) => {
-    this.setState({ status: Status.RESOLVED });
-    this.getTotalPages(totalHits);
-    this.setState(({ images }) => {
-      return { images: [...images, ...normalizedHits] };
-    });
-  };
-
-  handleError = msg => {
-    console.log(msg);
-    this.setState({ status: Status.REJECTED });
-  };
-
-  resetCurrentData = () => {
-    this.setState({ currentPage: 1, images: [] });
-  };
-
-  getQuery = searchQuery => {
-    this.resetCurrentData();
-    this.setState({ searchQuery });
-  };
   render() {
     const { images, modalImg, status, totalPages } = this.state;
     const isModalImg = !!modalImg.largeImageURL;
