@@ -24,7 +24,7 @@ export class App extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { searchQuery: currentQuery, currentPage, images } = this.state;
+    const { searchQuery: currentQuery, currentPage } = this.state;
     const isQueryChanged = prevState.searchQuery !== currentQuery;
     const isPageChanged = prevState.currentPage !== currentPage;
     if (isPageChanged || isQueryChanged) {
