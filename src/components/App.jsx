@@ -23,16 +23,6 @@ export class App extends Component {
     status: Status.IDLE,
   };
 
-  scrollPosY = 0;
-
-  getSnapshotBeforeUpdate(prevProps, prevState) {
-    const isQueryChanged = prevState.searchQuery !== this.state.searchQuery;
-    if (prevState.status === 'resolved') {
-      this.scrollPosY = isQueryChanged ? 0 : window.scrollY;
-    }
-    return null;
-  }
-
   componentDidUpdate(prevProps, prevState) {
     const { searchQuery: currentQuery, currentPage, images } = this.state;
     const isQueryChanged = prevState.searchQuery !== currentQuery;
@@ -43,15 +33,6 @@ export class App extends Component {
         .get({ query: currentQuery, currentPage })
         .then(this.handleReceivedData)
         .catch(this.handleError);
-    }
-    const isImagesAdded =
-      prevState.images.length !== 0 &&
-      prevState.images.length !== images.length;
-    const scrollPosY = this.scrollPosY;
-    if (isImagesAdded) {
-      this.scrollPageTo(scrollPosY, 100);
-    } else {
-      this.scrollPageTo(scrollPosY);
     }
   }
 
@@ -94,15 +75,6 @@ export class App extends Component {
   onLoadMoreClick = () => {
     this.setState(({ currentPage }) => {
       return { currentPage: currentPage + 1 };
-    });
-  };
-
-  scrollPageTo = (yPos, extraScroll = 0) => {
-    window.scrollTo(0, yPos);
-    window.scrollTo({
-      top: yPos + extraScroll,
-      left: 0,
-      behavior: 'smooth',
     });
   };
 
