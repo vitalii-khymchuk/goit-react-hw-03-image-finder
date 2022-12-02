@@ -37,25 +37,13 @@ export class App extends Component {
   }
 
   getQuery = searchQuery => {
-    this.resetCurrentData();
-    this.setState({ searchQuery });
+    this.setState({ searchQuery, currentPage: 1, images: [] });
   };
 
-  resetCurrentData = () => {
-    this.setState({ currentPage: 1, images: [] });
-  };
-
-  getTotalPages = totalHits => {
-    const imagesPerPage = 12;
-    const totalPages = Math.ceil(totalHits / imagesPerPage);
-    this.setState({ totalPages });
-  };
-
-  handleReceivedData = ({ totalHits, normalizedHits }) => {
+  handleReceivedData = ({ totalPages, normalizedHits }) => {
     this.setState({ status: Status.RESOLVED });
-    this.getTotalPages(totalHits);
     this.setState(({ images }) => {
-      return { images: [...images, ...normalizedHits] };
+      return { images: [...images, ...normalizedHits], totalPages };
     });
   };
 
@@ -79,32 +67,23 @@ export class App extends Component {
   };
 
   render() {
-    const { images, modalImg, status, totalPages } = this.state;
-    const isModalImg = !!modalImg.largeImageURL;
+    const { images, modalImg, status, totalPages, currentPage } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.getQuery} />
-        {status === 'pending' && (
-          <>
-            {images[0] && (
-              <ImageGallery
-                images={images}
-                addLargeImgToState={this.addLargeImgToState}
-              />
-            )}
-            <Loader />
-          </>
+        {!!images.length && (
+          <ImageGallery
+            images={images}
+            addLargeImgToState={this.addLargeImgToState}
+          />
         )}
+        {status === 'pending' && <Loader />}
         {status === 'resolved' && (
           <>
-            <ImageGallery
-              images={images}
-              addLargeImgToState={this.addLargeImgToState}
-            />
-            {totalPages > 1 && (
+            {totalPages > 1 && currentPage < totalPages && (
               <Button onLoadMoreClick={this.onLoadMoreClick} />
             )}
-            {isModalImg && (
+            {modalImg.largeImageURL && (
               <Modal modalImg={modalImg} closeModal={this.closeModal} />
             )}
           </>
